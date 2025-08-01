@@ -44,7 +44,7 @@ const iconMap: Record<ActivityType, LucideIcon> = {
 const actionColors: Record<ActivityType, string> = {
   [ActivityType.SIGN_UP]: 'bg-green-100 text-green-600 border-green-200',
   [ActivityType.SIGN_IN]: 'bg-blue-100 text-blue-600 border-blue-200',
-  [ActivityType.SIGN_OUT]: 'bg-gray-100 text-gray-600 border-gray-200',
+  [ActivityType.SIGN_OUT]: 'bg-muted text-muted-foreground border-border',
   [ActivityType.UPDATE_PASSWORD]: 'bg-yellow-100 text-yellow-600 border-yellow-200',
   [ActivityType.DELETE_ACCOUNT]: 'bg-red-100 text-red-600 border-red-200',
   [ActivityType.UPDATE_ACCOUNT]: 'bg-purple-100 text-purple-600 border-purple-200',
@@ -233,7 +233,7 @@ export default async function ActivityPage() {
                         const Icon = iconMap[log.action as ActivityType] || Settings;
                         const formattedAction = formatAction(log.action as ActivityType);
                         const category = getActionCategory(log.action as ActivityType);
-                        const colorClass = actionColors[log.action as ActivityType] || 'bg-gray-100 text-gray-600 border-gray-200';
+                        const colorClass = actionColors[log.action as ActivityType] || 'bg-muted text-muted-foreground border-border';
 
                         return (
                           <TableRow key={log.id}>
