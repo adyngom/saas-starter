@@ -56,6 +56,12 @@
   --color-gray-900: hsl(var(--foreground));
   --color-gray-950: hsl(var(--background));
 
+  /* Slate colors for terminal and code components */
+  --color-slate-100: 248 250 252;
+  --color-slate-400: 148 163 184;
+  --color-slate-900: 15 23 42;
+  --color-slate-950: 2 6 23;
+
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);

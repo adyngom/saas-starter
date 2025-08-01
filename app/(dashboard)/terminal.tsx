@@ -32,7 +32,7 @@ export function Terminal() {
   };
 
   return (
-    <div className="w-full rounded-lg shadow-lg overflow-hidden bg-gray-900 text-white font-mono text-sm relative">
+    <div className="w-full rounded-lg shadow-lg overflow-hidden bg-slate-900 dark:bg-slate-950 text-slate-100 font-mono text-sm relative">
       <div className="p-4">
         <div className="flex justify-between items-center mb-4">
           <div className="flex space-x-2">
@@ -42,7 +42,7 @@ export function Terminal() {
           </div>
           <button
             onClick={copyToClipboard}
-            className="text-gray-400 hover:text-white transition-colors"
+            className="text-slate-400 hover:text-slate-100 transition-colors"
             aria-label="Copy to clipboard"
           >
             {copied ? (
