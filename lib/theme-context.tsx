@@ -14,11 +14,141 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 const STORAGE_KEY = 'color-theme';
 
+// Theme tokens for each color theme
+const THEME_TOKENS = {
+  default: {
+    light: {
+      '--primary': '240 5.9% 10%',
+      '--primary-foreground': '0 0% 98%',
+    },
+    dark: {
+      '--primary': '0 0% 98%',
+      '--primary-foreground': '240 5.9% 10%',
+    }
+  },
+  blue: {
+    light: {
+      '--primary': '221.2 83.2% 53.3%',
+      '--primary-foreground': '210 40% 98%',
+    },
+    dark: {
+      '--primary': '217.2 91.2% 59.8%',
+      '--primary-foreground': '240 5.9% 10%',
+    }
+  },
+  green: {
+    light: {
+      '--primary': '142.1 76.2% 36.3%',
+      '--primary-foreground': '355.7 100% 97.3%',
+    },
+    dark: {
+      '--primary': '142.1 70.6% 45.3%',
+      '--primary-foreground': '144.9 100% 6.7%',
+    }
+  },
+  orange: {
+    light: {
+      '--primary': '20.5 90.2% 48.2%',
+      '--primary-foreground': '60 9.1% 97.8%',
+    },
+    dark: {
+      '--primary': '20.5 90.2% 48.2%',
+      '--primary-foreground': '60 9.1% 97.8%',
+    }
+  },
+  red: {
+    light: {
+      '--primary': '0 72.2% 50.6%',
+      '--primary-foreground': '0 85.7% 97.3%',
+    },
+    dark: {
+      '--primary': '0 72.2% 50.6%',
+      '--primary-foreground': '0 85.7% 97.3%',
+    }
+  },
+  rose: {
+    light: {
+      '--primary': '346.8 77.2% 49.8%',
+      '--primary-foreground': '355.7 100% 97.3%',
+    },
+    dark: {
+      '--primary': '346.8 77.2% 49.8%',
+      '--primary-foreground': '355.7 100% 97.3%',
+    }
+  },
+  violet: {
+    light: {
+      '--primary': '262.1 83.3% 57.8%',
+      '--primary-foreground': '210 20% 98%',
+    },
+    dark: {
+      '--primary': '263.4 70% 50.4%',
+      '--primary-foreground': '210 20% 98%',
+    }
+  },
+  yellow: {
+    light: {
+      '--primary': '47.9 95.8% 53.1%',
+      '--primary-foreground': '26 83.3% 14.1%',
+    },
+    dark: {
+      '--primary': '47.9 95.8% 53.1%',
+      '--primary-foreground': '26 83.3% 14.1%',
+    }
+  }
+} as const;
+
 export function ColorThemeProvider({ children }: { children: React.ReactNode }) {
-  const [colorTheme, setColorThemeState] = useState(DEFAULT_THEME);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [colorTheme, setColorThemeState] = useState(() => {
+    // Try to get saved theme on client-side only
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        return saved && THEME_CONFIGS.find(t => t.name === saved) ? saved : DEFAULT_THEME;
+      } catch {
+        return DEFAULT_THEME;
+      }
+    }
+    return DEFAULT_THEME;
+  });
 
   const themeConfig = THEME_CONFIGS.find(t => t.name === colorTheme) || THEME_CONFIGS[0];
+
+  const applyThemeTokens = (themeName: string) => {
+    const tokens = THEME_TOKENS[themeName as keyof typeof THEME_TOKENS];
+    if (!tokens) return;
+
+    // Apply light tokens to :root
+    Object.entries(tokens.light).forEach(([property, value]) => {
+      document.documentElement.style.setProperty(property, value);
+    });
+
+    // Set up CSS for dark mode
+    const darkCSS = Object.entries(tokens.dark)
+      .map(([property, value]) => `${property}: ${value};`)
+      .join('\n    ');
+
+    // Remove initial theme script and existing dark mode styles
+    const initialTheme = document.getElementById('initial-theme');
+    if (initialTheme) {
+      initialTheme.remove();
+    }
+    
+    let darkStyle = document.getElementById('dynamic-dark-theme');
+    if (darkStyle) {
+      darkStyle.remove();
+    }
+
+    // Add new dark mode styles
+    darkStyle = document.createElement('style');
+    darkStyle.id = 'dynamic-dark-theme';
+    darkStyle.textContent = `
+      .dark {
+        ${darkCSS}
+      }
+    `;
+    document.head.appendChild(darkStyle);
+  };
 
   const setColorTheme = (theme: string) => {
     if (!THEME_CONFIGS.find(t => t.name === theme)) return;
@@ -32,61 +162,28 @@ export function ColorThemeProvider({ children }: { children: React.ReactNode }) 
       console.warn('Failed to save color theme to localStorage');
     }
     
-    // Dynamically load the theme CSS
-    loadThemeCSS(theme);
+    // Apply theme tokens immediately
+    applyThemeTokens(theme);
   };
 
-  const loadThemeCSS = async (themeName: string) => {
-    const config = THEME_CONFIGS.find(t => t.name === themeName);
-    if (!config) return;
-
-    try {
-      // Remove existing dynamic theme styles
-      const existingStyle = document.getElementById('dynamic-color-theme');
-      if (existingStyle) {
-        existingStyle.remove();
-      }
-
-      // Fetch and inject theme CSS with higher specificity
-      const response = await fetch(config.cssFile);
-      if (!response.ok) return;
-      
-      const cssText = await response.text();
-      
-      // Wrap in higher specificity layer
-      const wrappedCSS = `
-        @layer dynamic-theme {
-          ${cssText}
-        }
-      `;
-      
-      const styleElement = document.createElement('style');
-      styleElement.id = 'dynamic-color-theme';
-      styleElement.textContent = wrappedCSS;
-      
-      // Append to head for higher specificity
-      document.head.appendChild(styleElement);
-      setIsLoaded(true);
-    } catch (error) {
-      console.warn('Failed to load theme CSS:', error);
-      setIsLoaded(true);
-    }
-  };
-
-  // Load theme from localStorage on mount
+  // Apply theme on mount and when theme changes
   useEffect(() => {
-    try {
-      const savedTheme = localStorage.getItem(STORAGE_KEY);
-      const themeToLoad = savedTheme && THEME_CONFIGS.find(t => t.name === savedTheme) 
-        ? savedTheme 
-        : DEFAULT_THEME;
-      
-      setColorThemeState(themeToLoad);
-      loadThemeCSS(themeToLoad);
-    } catch (e) {
-      console.warn('Failed to load color theme from localStorage');
-      setColorThemeState(DEFAULT_THEME);
-      loadThemeCSS(DEFAULT_THEME);
+    if (typeof window !== 'undefined') {
+      applyThemeTokens(colorTheme);
+    }
+  }, [colorTheme]);
+
+  // Handle hydration mismatch by checking localStorage after mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const savedTheme = localStorage.getItem(STORAGE_KEY);
+        if (savedTheme && THEME_CONFIGS.find(t => t.name === savedTheme) && savedTheme !== colorTheme) {
+          setColorThemeState(savedTheme);
+        }
+      } catch (e) {
+        console.warn('Failed to load color theme from localStorage');
+      }
     }
   }, []);
 

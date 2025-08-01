@@ -15,9 +15,9 @@ export const THEME_CONFIGS: ThemeConfig[] = [
     label: 'Default',
     cssFile: '/themes/default.css',
     previewColors: {
-      primary: 'oklch(0.205 0 0)',
-      secondary: 'oklch(0.97 0 0)',
-      accent: 'oklch(0.97 0 0)',
+      primary: 'hsl(240 5.9% 10%)',
+      secondary: 'hsl(240 4.8% 95.9%)',
+      accent: 'hsl(240 4.8% 95.9%)',
     },
   },
   {
@@ -25,9 +25,9 @@ export const THEME_CONFIGS: ThemeConfig[] = [
     label: 'Blue',
     cssFile: '/themes/blue.css',
     previewColors: {
-      primary: 'oklch(0.623 0.214 259.815)',
-      secondary: 'oklch(0.967 0.001 286.375)',
-      accent: 'oklch(0.967 0.001 286.375)',
+      primary: 'hsl(221.2 83.2% 53.3%)',
+      secondary: 'hsl(210 40% 96.1%)',
+      accent: 'hsl(210 40% 96.1%)',
     },
   },
   {
@@ -35,9 +35,9 @@ export const THEME_CONFIGS: ThemeConfig[] = [
     label: 'Green',
     cssFile: '/themes/green.css',
     previewColors: {
-      primary: 'oklch(0.723 0.219 149.579)',
-      secondary: 'oklch(0.967 0.001 286.375)',
-      accent: 'oklch(0.967 0.001 286.375)',
+      primary: 'hsl(142.1 76.2% 36.3%)',
+      secondary: 'hsl(210 40% 96.1%)',
+      accent: 'hsl(210 40% 96.1%)',
     },
   },
   {
@@ -45,9 +45,9 @@ export const THEME_CONFIGS: ThemeConfig[] = [
     label: 'Orange',
     cssFile: '/themes/orange.css',
     previewColors: {
-      primary: 'oklch(0.705 0.213 47.604)',
-      secondary: 'oklch(0.967 0.001 286.375)',
-      accent: 'oklch(0.967 0.001 286.375)',
+      primary: 'hsl(20.5 90.2% 48.2%)',
+      secondary: 'hsl(60 4.8% 95.9%)',
+      accent: 'hsl(60 4.8% 95.9%)',
     },
   },
   {
@@ -55,9 +55,9 @@ export const THEME_CONFIGS: ThemeConfig[] = [
     label: 'Red',
     cssFile: '/themes/red.css',
     previewColors: {
-      primary: 'oklch(0.637 0.237 25.331)',
-      secondary: 'oklch(0.967 0.001 286.375)',
-      accent: 'oklch(0.967 0.001 286.375)',
+      primary: 'hsl(0 72.2% 50.6%)',
+      secondary: 'hsl(0 4.8% 95.9%)',
+      accent: 'hsl(0 4.8% 95.9%)',
     },
   },
   {
@@ -65,9 +65,9 @@ export const THEME_CONFIGS: ThemeConfig[] = [
     label: 'Rose',
     cssFile: '/themes/rose.css',
     previewColors: {
-      primary: 'oklch(0.597 0.164 3.716)',
-      secondary: 'oklch(0.967 0.004 7.687)',
-      accent: 'oklch(0.967 0.004 7.687)',
+      primary: 'hsl(346.8 77.2% 49.8%)',
+      secondary: 'hsl(355 4.8% 95.9%)',
+      accent: 'hsl(355 4.8% 95.9%)',
     },
   },
   {
@@ -75,9 +75,9 @@ export const THEME_CONFIGS: ThemeConfig[] = [
     label: 'Violet',
     cssFile: '/themes/violet.css',
     previewColors: {
-      primary: 'oklch(0.606 0.25 292.717)',
-      secondary: 'oklch(0.967 0.001 286.375)',
-      accent: 'oklch(0.967 0.001 286.375)',
+      primary: 'hsl(262.1 83.3% 57.8%)',
+      secondary: 'hsl(270 4.8% 95.9%)',
+      accent: 'hsl(270 4.8% 95.9%)',
     },
   },
   {
@@ -85,9 +85,9 @@ export const THEME_CONFIGS: ThemeConfig[] = [
     label: 'Yellow',
     cssFile: '/themes/yellow.css',
     previewColors: {
-      primary: 'oklch(0.645 0.163 79.844)',
-      secondary: 'oklch(0.967 0.01 98.716)',
-      accent: 'oklch(0.967 0.01 98.716)',
+      primary: 'hsl(47.9 95.8% 53.1%)',
+      secondary: 'hsl(60 4.8% 95.9%)',
+      accent: 'hsl(60 4.8% 95.9%)',
     },
   },
 ];
