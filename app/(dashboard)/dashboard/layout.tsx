@@ -2,8 +2,19 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { CircleIcon, LayoutDashboard, Settings, Shield, Activity } from 'lucide-react';
+import { useState, Suspense } from 'react';
+import { CircleIcon, LayoutDashboard, Settings, Shield, Activity, LogOut, Home } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { signOut } from '@/app/(login)/actions';
+import { User } from '@/lib/db/schema';
+import useSWR from 'swr';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
 import {
   Sidebar,
   SidebarContent,
@@ -27,6 +38,54 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
+
+function UserMenu() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { data: user } = useSWR<User>('/api/user', fetcher);
+
+  if (!user) {
+    return null;
+  }
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+    } catch (error) {
+      console.error('Sign out failed:', error);
+    }
+  };
+
+  return (
+    <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+      <DropdownMenuTrigger>
+        <Avatar className="cursor-pointer size-9">
+          <AvatarImage alt={user.name || ''} />
+          <AvatarFallback>
+            {user.email
+              .split(' ')
+              .map((n) => n[0])
+              .join('')}
+          </AvatarFallback>
+        </Avatar>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="flex flex-col gap-1">
+        <DropdownMenuItem className="cursor-pointer">
+          <Link href="/dashboard" className="flex w-full items-center">
+            <Home className="mr-2 h-4 w-4" />
+            <span>Dashboard</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer" onClick={handleSignOut}>
+          <LogOut className="mr-2 h-4 w-4" />
+          <span>Sign out</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
 interface NavItem {
   title: string;
@@ -146,8 +205,11 @@ export default function DashboardLayout({
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-          <div className="px-4">
+          <div className="flex items-center gap-2 px-4">
             <ThemeToggle />
+            <Suspense fallback={<div className="h-9" />}>
+              <UserMenu />
+            </Suspense>
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">

@@ -1,10 +1,39 @@
 import { Button } from '@/components/ui/button';
-import { ArrowRight, CreditCard, Database } from 'lucide-react';
+import { ArrowRight, CreditCard, Database, CircleIcon } from 'lucide-react';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { Terminal } from './terminal';
+import Link from 'next/link';
+
+function Header() {
+  return (
+    <header className="border-b border-border">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+        <Link href="/" className="flex items-center">
+          <CircleIcon className="h-6 w-6 text-orange-500" />
+          <span className="ml-2 text-xl font-semibold text-foreground">ACME</span>
+        </Link>
+        <div className="flex items-center space-x-4">
+          <Link
+            href="/pricing"
+            className="text-sm font-medium text-muted-foreground hover:text-foreground"
+          >
+            Pricing
+          </Link>
+          <ThemeToggle />
+          <Button asChild className="rounded-full">
+            <Link href="/sign-up">Sign Up</Link>
+          </Button>
+        </div>
+      </div>
+    </header>
+  );
+}
 
 export default function HomePage() {
   return (
-    <main>
+    <>
+      <Header />
+      <main>
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="lg:grid lg:grid-cols-12 lg:gap-8">
@@ -125,6 +154,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-    </main>
+      </main>
+    </>
   );
 }
