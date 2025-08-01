@@ -16,6 +16,7 @@ const STORAGE_KEY = 'color-theme';
 
 export function ColorThemeProvider({ children }: { children: React.ReactNode }) {
   const [colorTheme, setColorThemeState] = useState(DEFAULT_THEME);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const themeConfig = THEME_CONFIGS.find(t => t.name === colorTheme) || THEME_CONFIGS[0];
 
@@ -35,35 +36,56 @@ export function ColorThemeProvider({ children }: { children: React.ReactNode }) 
     loadThemeCSS(theme);
   };
 
-  const loadThemeCSS = (themeName: string) => {
+  const loadThemeCSS = async (themeName: string) => {
     const config = THEME_CONFIGS.find(t => t.name === themeName);
     if (!config) return;
 
-    // Remove existing theme stylesheets
-    const existingThemes = document.querySelectorAll('link[data-theme-css]');
-    existingThemes.forEach(link => link.remove());
+    try {
+      // Remove existing dynamic theme styles
+      const existingStyle = document.getElementById('dynamic-color-theme');
+      if (existingStyle) {
+        existingStyle.remove();
+      }
 
-    // Add new theme stylesheet
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = config.cssFile;
-    link.setAttribute('data-theme-css', themeName);
-    document.head.appendChild(link);
+      // Fetch and inject theme CSS with higher specificity
+      const response = await fetch(config.cssFile);
+      if (!response.ok) return;
+      
+      const cssText = await response.text();
+      
+      // Wrap in higher specificity layer
+      const wrappedCSS = `
+        @layer dynamic-theme {
+          ${cssText}
+        }
+      `;
+      
+      const styleElement = document.createElement('style');
+      styleElement.id = 'dynamic-color-theme';
+      styleElement.textContent = wrappedCSS;
+      
+      // Append to head for higher specificity
+      document.head.appendChild(styleElement);
+      setIsLoaded(true);
+    } catch (error) {
+      console.warn('Failed to load theme CSS:', error);
+      setIsLoaded(true);
+    }
   };
 
   // Load theme from localStorage on mount
   useEffect(() => {
     try {
       const savedTheme = localStorage.getItem(STORAGE_KEY);
-      if (savedTheme && THEME_CONFIGS.find(t => t.name === savedTheme)) {
-        setColorThemeState(savedTheme);
-        loadThemeCSS(savedTheme);
-      } else {
-        // Load default theme
-        loadThemeCSS(DEFAULT_THEME);
-      }
+      const themeToLoad = savedTheme && THEME_CONFIGS.find(t => t.name === savedTheme) 
+        ? savedTheme 
+        : DEFAULT_THEME;
+      
+      setColorThemeState(themeToLoad);
+      loadThemeCSS(themeToLoad);
     } catch (e) {
       console.warn('Failed to load color theme from localStorage');
+      setColorThemeState(DEFAULT_THEME);
       loadThemeCSS(DEFAULT_THEME);
     }
   }, []);
