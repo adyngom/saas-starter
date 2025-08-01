@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, Suspense } from 'react';
 import { CircleIcon, LayoutDashboard, Settings, Shield, Activity, LogOut, Home } from 'lucide-react';
-import { ThemeToggle } from '@/components/theme-toggle';
+import { ThemeSelector } from '@/components/theme-selector';
 import { signOut } from '@/app/(login)/actions';
 import { User } from '@/lib/db/schema';
 import useSWR from 'swr';
@@ -128,7 +128,7 @@ function DashboardSidebar() {
     <Sidebar variant="inset">
       <SidebarHeader>
         <div className="flex items-center gap-2 px-4 py-2">
-          <CircleIcon className="h-6 w-6 text-orange-500" />
+          <CircleIcon className="h-6 w-6 text-primary" />
           <span className="text-lg font-semibold">ACME Dashboard</span>
         </div>
       </SidebarHeader>
@@ -206,7 +206,7 @@ export default function DashboardLayout({
             </Breadcrumb>
           </div>
           <div className="flex items-center gap-2 px-4">
-            <ThemeToggle />
+            <ThemeSelector />
             <Suspense fallback={<div className="h-9" />}>
               <UserMenu />
             </Suspense>

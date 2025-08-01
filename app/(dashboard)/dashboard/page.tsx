@@ -100,7 +100,7 @@ function OverviewCards() {
         <CardContent>
           <div className="text-2xl font-bold">
             {subscriptionStatus === 'active' ? (
-              <Badge variant="default" className="bg-green-500 hover:bg-green-600">
+              <Badge variant="default" className="bg-green-600 hover:bg-green-700 text-white">
                 Active
               </Badge>
             ) : subscriptionStatus === 'trialing' ? (
@@ -255,14 +255,14 @@ function TeamMembersTable() {
                 <TableCell>
                   <Badge 
                     variant={member.role === 'owner' ? 'default' : 'secondary'}
-                    className={member.role === 'owner' ? 'bg-orange-500 hover:bg-orange-600' : ''}
+                    className={member.role === 'owner' ? 'bg-primary hover:bg-primary/90 text-primary-foreground' : ''}
                   >
                     {member.role === 'owner' && <Crown className="mr-1 h-3 w-3" />}
                     {member.role.charAt(0).toUpperCase() + member.role.slice(1)}
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  <Badge variant="outline" className="text-green-600 border-green-200">
+                  <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800">
                     <CheckCircle className="mr-1 h-3 w-3" />
                     Active
                   </Badge>
@@ -276,7 +276,7 @@ function TeamMembersTable() {
                         variant="ghost"
                         size="sm"
                         disabled={isRemovePending}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        className="text-destructive hover:text-destructive/90 hover:bg-destructive/10">
                       >
                         {isRemovePending ? 'Removing...' : 'Remove'}
                       </Button>
@@ -290,8 +290,8 @@ function TeamMembersTable() {
           </TableBody>
         </Table>
         {removeState?.error && (
-          <div className="mt-4 p-3 rounded-md bg-red-50 border border-red-200">
-            <p className="text-red-800 text-sm flex items-center">
+          <div className="mt-4 p-3 rounded-md bg-destructive/10 border border-destructive/20">
+            <p className="text-destructive text-sm flex items-center">
               <AlertCircle className="mr-2 h-4 w-4" />
               {removeState.error}
             </p>
@@ -360,8 +360,8 @@ function InviteTeamMember() {
           </div>
           
           {inviteState?.error && (
-            <div className="p-3 rounded-md bg-red-50 border border-red-200">
-              <p className="text-red-800 text-sm flex items-center">
+            <div className="p-3 rounded-md bg-destructive/10 border border-destructive/20">
+              <p className="text-destructive text-sm flex items-center">
                 <AlertCircle className="mr-2 h-4 w-4" />
                 {inviteState.error}
               </p>
@@ -369,8 +369,8 @@ function InviteTeamMember() {
           )}
           
           {inviteState?.success && (
-            <div className="p-3 rounded-md bg-green-50 border border-green-200">
-              <p className="text-green-800 text-sm flex items-center">
+            <div className="p-3 rounded-md bg-green-50 border border-green-200 dark:bg-green-900/20 dark:border-green-800">
+              <p className="text-green-700 dark:text-green-200 text-sm flex items-center">
                 <CheckCircle className="mr-2 h-4 w-4" />
                 {inviteState.success}
               </p>
@@ -379,7 +379,7 @@ function InviteTeamMember() {
           
           <Button
             type="submit"
-            className="bg-orange-500 hover:bg-orange-600 text-white"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground"
             disabled={isInvitePending || !isOwner}
           >
             {isInvitePending ? (

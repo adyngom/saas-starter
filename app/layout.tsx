@@ -4,6 +4,7 @@ import { Manrope } from 'next/font/google';
 import { getUser, getTeamForUser } from '@/lib/db/queries';
 import { SWRConfig } from 'swr';
 import { ThemeProvider } from '@/components/theme-provider';
+import { ColorThemeProvider } from '@/lib/theme-context';
 
 export const metadata: Metadata = {
   title: 'Next.js SaaS Starter',
@@ -30,18 +31,20 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <SWRConfig
-            value={{
-              fallback: {
-                // We do NOT await here
-                // Only components that read this data will suspend
-                '/api/user': getUser(),
-                '/api/team': getTeamForUser()
-              }
-            }}
-          >
-            {children}
-          </SWRConfig>
+          <ColorThemeProvider>
+            <SWRConfig
+              value={{
+                fallback: {
+                  // We do NOT await here
+                  // Only components that read this data will suspend
+                  '/api/user': getUser(),
+                  '/api/team': getTeamForUser()
+                }
+              }}
+            >
+              {children}
+            </SWRConfig>
+          </ColorThemeProvider>
         </ThemeProvider>
       </body>
     </html>

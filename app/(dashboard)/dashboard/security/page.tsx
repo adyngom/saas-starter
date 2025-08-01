@@ -50,8 +50,8 @@ function SecurityOverview() {
       <CardContent>
         <div className="grid gap-4 md:grid-cols-2">
           <div className="flex items-start space-x-3">
-            <div className="bg-green-100 rounded-full p-2">
-              <CheckCircle className="h-4 w-4 text-green-600" />
+            <div className="bg-green-100 dark:bg-green-900/20 rounded-full p-2">
+              <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
             </div>
             <div>
               <p className="font-medium text-sm">Password Protected</p>
@@ -60,8 +60,8 @@ function SecurityOverview() {
           </div>
           
           <div className="flex items-start space-x-3">
-            <div className="bg-green-100 rounded-full p-2">
-              <CheckCircle className="h-4 w-4 text-green-600" />
+            <div className="bg-green-100 dark:bg-green-900/20 rounded-full p-2">
+              <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
             </div>
             <div>
               <p className="font-medium text-sm">Account Active</p>
@@ -107,10 +107,10 @@ function PasswordStrengthIndicator({ password }: { password: string }) {
   
   const strength = getStrength(password);
   const getStrengthText = (score: number) => {
-    if (score <= 2) return { text: 'Weak', color: 'bg-red-500' };
+    if (score <= 2) return { text: 'Weak', color: 'bg-destructive' };
     if (score <= 3) return { text: 'Fair', color: 'bg-yellow-500' };
     if (score <= 4) return { text: 'Good', color: 'bg-blue-500' };
-    return { text: 'Strong', color: 'bg-green-500' };
+    return { text: 'Strong', color: 'bg-green-600' };
   };
   
   const { text, color } = getStrengthText(strength);
@@ -278,9 +278,9 @@ export default function SecurityPage() {
             )}
             
             {passwordState.success && (
-              <Alert className="border-green-200 bg-green-50">
-                <CheckCircle className="h-4 w-4 text-green-600" />
-                <AlertDescription className="text-green-800">{passwordState.success}</AlertDescription>
+              <Alert className="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20">
+                <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+                <AlertDescription className="text-green-700 dark:text-green-200">{passwordState.success}</AlertDescription>
               </Alert>
             )}
             
@@ -295,7 +295,7 @@ export default function SecurityPage() {
               </div>
               <Button
                 type="submit"
-                className="bg-orange-500 hover:bg-orange-600 text-white"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground"
                 disabled={isPasswordPending}
               >
                 {isPasswordPending ? (
@@ -318,7 +318,7 @@ export default function SecurityPage() {
       {/* Danger Zone */}
       <Card className="border-red-200">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-red-700">
+          <CardTitle className="flex items-center gap-2 text-destructive">
             <AlertTriangle className="h-5 w-5" />
             Danger Zone
           </CardTitle>
@@ -377,7 +377,7 @@ export default function SecurityPage() {
             
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-red-700">Delete Account</p>
+                <p className="text-sm font-medium text-destructive">Delete Account</p>
                 <p className="text-xs text-muted-foreground">
                   This action cannot be undone. Please be certain.
                 </p>
@@ -385,7 +385,7 @@ export default function SecurityPage() {
               <Button
                 type="submit"
                 variant="destructive"
-                className="bg-red-600 hover:bg-red-700"
+                className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
                 disabled={isDeletePending}
               >
                 {isDeletePending ? (

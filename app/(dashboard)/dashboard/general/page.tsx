@@ -82,7 +82,7 @@ function ProfileHeader() {
             <div className="flex items-center gap-4">
               <Badge 
                 variant={user?.role === 'owner' ? 'default' : 'secondary'}
-                className={user?.role === 'owner' ? 'bg-orange-500 hover:bg-orange-600' : ''}
+                className={user?.role === 'owner' ? 'bg-primary hover:bg-primary/90 text-primary-foreground' : ''}
               >
                 {user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'Member'}
               </Badge>
@@ -239,8 +239,8 @@ export default function GeneralPage() {
             </Suspense>
             
             {state.error && (
-              <div className="p-3 rounded-md bg-red-50 border border-red-200">
-                <p className="text-red-800 text-sm flex items-center">
+              <div className="p-3 rounded-md bg-destructive/10 border border-destructive/20">
+                <p className="text-destructive text-sm flex items-center">
                   <AlertCircle className="mr-2 h-4 w-4" />
                   {state.error}
                 </p>
@@ -248,8 +248,8 @@ export default function GeneralPage() {
             )}
             
             {state.success && (
-              <div className="p-3 rounded-md bg-green-50 border border-green-200">
-                <p className="text-green-800 text-sm flex items-center">
+              <div className="p-3 rounded-md bg-green-50 border border-green-200 dark:bg-green-900/20 dark:border-green-800">
+                <p className="text-green-700 dark:text-green-200 text-sm flex items-center">
                   <CheckCircle className="mr-2 h-4 w-4" />
                   {state.success}
                 </p>
@@ -267,7 +267,7 @@ export default function GeneralPage() {
               </div>
               <Button
                 type="submit"
-                className="bg-orange-500 hover:bg-orange-600 text-white"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground"
                 disabled={isPending}
               >
                 {isPending ? (

@@ -2,13 +2,13 @@
 
 import Link from 'next/link';
 import { CircleIcon } from 'lucide-react';
-import { ThemeToggle } from '@/components/theme-toggle';
+import { ThemeSelector } from '@/components/theme-selector';
 
 export default function LoginLayout({ children }: { children: React.ReactNode }) {
   return (
     <section className="relative min-h-screen">
       <div className="absolute top-4 right-4 z-10">
-        <ThemeToggle />
+        <ThemeSelector />
       </div>
       <div className="absolute top-4 left-4 z-10">
         <Link href="/" className="flex items-center text-muted-foreground hover:text-foreground transition-colors">

@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { ArrowRight, CreditCard, Database, CircleIcon } from 'lucide-react';
-import { ThemeToggle } from '@/components/theme-toggle';
+import { ThemeSelector } from '@/components/theme-selector';
 import { Terminal } from './terminal';
 import Link from 'next/link';
 
@@ -9,7 +9,7 @@ function Header() {
     <header className="border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
         <Link href="/" className="flex items-center">
-          <CircleIcon className="h-6 w-6 text-orange-500" />
+          <CircleIcon className="h-6 w-6 text-primary" />
           <span className="ml-2 text-xl font-semibold text-foreground">ACME</span>
         </Link>
         <div className="flex items-center space-x-4">
@@ -19,7 +19,7 @@ function Header() {
           >
             Pricing
           </Link>
-          <ThemeToggle />
+          <ThemeSelector />
           <Button asChild className="rounded-full">
             <Link href="/sign-up">Sign Up</Link>
           </Button>
@@ -40,7 +40,7 @@ export default function HomePage() {
             <div className="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left">
               <h1 className="text-4xl font-bold text-foreground tracking-tight sm:text-5xl md:text-6xl">
                 Build Your SaaS
-                <span className="block text-orange-500">Faster Than Ever</span>
+                <span className="block text-primary">Faster Than Ever</span>
               </h1>
               <p className="mt-3 text-base text-muted-foreground sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
                 Launch your SaaS product in record time with our powerful,
@@ -74,7 +74,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="lg:grid lg:grid-cols-3 lg:gap-8">
             <div>
-              <div className="flex items-center justify-center h-12 w-12 rounded-md bg-orange-500 text-white">
+              <div className="flex items-center justify-center h-12 w-12 rounded-md bg-primary text-primary-foreground">
                 <svg viewBox="0 0 24 24" className="h-6 w-6">
                   <path
                     fill="currentColor"
@@ -94,7 +94,7 @@ export default function HomePage() {
             </div>
 
             <div className="mt-10 lg:mt-0">
-              <div className="flex items-center justify-center h-12 w-12 rounded-md bg-orange-500 text-white">
+              <div className="flex items-center justify-center h-12 w-12 rounded-md bg-primary text-primary-foreground">
                 <Database className="h-6 w-6" />
               </div>
               <div className="mt-5">
@@ -109,7 +109,7 @@ export default function HomePage() {
             </div>
 
             <div className="mt-10 lg:mt-0">
-              <div className="flex items-center justify-center h-12 w-12 rounded-md bg-orange-500 text-white">
+              <div className="flex items-center justify-center h-12 w-12 rounded-md bg-primary text-primary-foreground">
                 <CreditCard className="h-6 w-6" />
               </div>
               <div className="mt-5">

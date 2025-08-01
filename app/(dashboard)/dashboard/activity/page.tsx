@@ -42,16 +42,16 @@ const iconMap: Record<ActivityType, LucideIcon> = {
 };
 
 const actionColors: Record<ActivityType, string> = {
-  [ActivityType.SIGN_UP]: 'bg-green-100 text-green-600 border-green-200',
+  [ActivityType.SIGN_UP]: 'bg-green-100 text-green-600 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800',
   [ActivityType.SIGN_IN]: 'bg-blue-100 text-blue-600 border-blue-200',
   [ActivityType.SIGN_OUT]: 'bg-muted text-muted-foreground border-border',
   [ActivityType.UPDATE_PASSWORD]: 'bg-yellow-100 text-yellow-600 border-yellow-200',
-  [ActivityType.DELETE_ACCOUNT]: 'bg-red-100 text-red-600 border-red-200',
+  [ActivityType.DELETE_ACCOUNT]: 'bg-destructive/10 text-destructive border-destructive/20',
   [ActivityType.UPDATE_ACCOUNT]: 'bg-purple-100 text-purple-600 border-purple-200',
-  [ActivityType.CREATE_TEAM]: 'bg-green-100 text-green-600 border-green-200',
-  [ActivityType.REMOVE_TEAM_MEMBER]: 'bg-red-100 text-red-600 border-red-200',
+  [ActivityType.CREATE_TEAM]: 'bg-green-100 text-green-600 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800',
+  [ActivityType.REMOVE_TEAM_MEMBER]: 'bg-destructive/10 text-destructive border-destructive/20',
   [ActivityType.INVITE_TEAM_MEMBER]: 'bg-blue-100 text-blue-600 border-blue-200',
-  [ActivityType.ACCEPT_INVITATION]: 'bg-green-100 text-green-600 border-green-200',
+  [ActivityType.ACCEPT_INVITATION]: 'bg-green-100 text-green-600 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800',
 };
 
 function getRelativeTime(date: Date) {
@@ -266,8 +266,8 @@ export default async function ActivityPage() {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center text-center py-12">
-              <div className="bg-orange-100 rounded-full p-4 mb-4">
-                <AlertCircle className="h-8 w-8 text-orange-600" />
+              <div className="bg-primary/10 rounded-full p-4 mb-4">
+                <AlertCircle className="h-8 w-8 text-primary" />
               </div>
               <h3 className="text-lg font-semibold mb-2">
                 No activity yet
