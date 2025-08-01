@@ -170,4 +170,11 @@
     color: theme(colors.foreground);
     font-family: "Manrope", Arial, Helvetica, sans-serif;
   }
+  html::-webkit-scrollbar {
+    display: none; /* Hides the scrollbar */
+  }
+  html {
+    scrollbar-width: none; /* Hides the scrollbar for Firefox */
+  }
+  
 }
