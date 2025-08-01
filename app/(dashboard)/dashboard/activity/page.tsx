@@ -1,4 +1,14 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import {
   Settings,
   LogOut,
@@ -9,6 +19,10 @@ import {
   UserMinus,
   Mail,
   CheckCircle,
+  Shield,
+  Eye,
+  Clock,
+  Filter,
   type LucideIcon,
 } from 'lucide-react';
 import { ActivityType } from '@/lib/db/schema';
@@ -25,6 +39,19 @@ const iconMap: Record<ActivityType, LucideIcon> = {
   [ActivityType.REMOVE_TEAM_MEMBER]: UserMinus,
   [ActivityType.INVITE_TEAM_MEMBER]: Mail,
   [ActivityType.ACCEPT_INVITATION]: CheckCircle,
+};
+
+const actionColors: Record<ActivityType, string> = {
+  [ActivityType.SIGN_UP]: 'bg-green-100 text-green-600 border-green-200',
+  [ActivityType.SIGN_IN]: 'bg-blue-100 text-blue-600 border-blue-200',
+  [ActivityType.SIGN_OUT]: 'bg-gray-100 text-gray-600 border-gray-200',
+  [ActivityType.UPDATE_PASSWORD]: 'bg-yellow-100 text-yellow-600 border-yellow-200',
+  [ActivityType.DELETE_ACCOUNT]: 'bg-red-100 text-red-600 border-red-200',
+  [ActivityType.UPDATE_ACCOUNT]: 'bg-purple-100 text-purple-600 border-purple-200',
+  [ActivityType.CREATE_TEAM]: 'bg-green-100 text-green-600 border-green-200',
+  [ActivityType.REMOVE_TEAM_MEMBER]: 'bg-red-100 text-red-600 border-red-200',
+  [ActivityType.INVITE_TEAM_MEMBER]: 'bg-blue-100 text-blue-600 border-blue-200',
+  [ActivityType.ACCEPT_INVITATION]: 'bg-green-100 text-green-600 border-green-200',
 };
 
 function getRelativeTime(date: Date) {
@@ -44,83 +71,214 @@ function getRelativeTime(date: Date) {
 function formatAction(action: ActivityType): string {
   switch (action) {
     case ActivityType.SIGN_UP:
-      return 'You signed up';
+      return 'Account created';
     case ActivityType.SIGN_IN:
-      return 'You signed in';
+      return 'Signed in';
     case ActivityType.SIGN_OUT:
-      return 'You signed out';
+      return 'Signed out';
     case ActivityType.UPDATE_PASSWORD:
-      return 'You changed your password';
+      return 'Password updated';
     case ActivityType.DELETE_ACCOUNT:
-      return 'You deleted your account';
+      return 'Account deleted';
     case ActivityType.UPDATE_ACCOUNT:
-      return 'You updated your account';
+      return 'Account updated';
     case ActivityType.CREATE_TEAM:
-      return 'You created a new team';
+      return 'Team created';
     case ActivityType.REMOVE_TEAM_MEMBER:
-      return 'You removed a team member';
+      return 'Member removed';
     case ActivityType.INVITE_TEAM_MEMBER:
-      return 'You invited a team member';
+      return 'Member invited';
     case ActivityType.ACCEPT_INVITATION:
-      return 'You accepted an invitation';
+      return 'Invitation accepted';
     default:
-      return 'Unknown action occurred';
+      return 'Unknown action';
+  }
+}
+
+function getActionCategory(action: ActivityType): string {
+  switch (action) {
+    case ActivityType.SIGN_UP:
+    case ActivityType.SIGN_IN:
+    case ActivityType.SIGN_OUT:
+      return 'Authentication';
+    case ActivityType.UPDATE_PASSWORD:
+    case ActivityType.DELETE_ACCOUNT:
+    case ActivityType.UPDATE_ACCOUNT:
+      return 'Account';
+    case ActivityType.CREATE_TEAM:
+    case ActivityType.REMOVE_TEAM_MEMBER:
+    case ActivityType.INVITE_TEAM_MEMBER:
+    case ActivityType.ACCEPT_INVITATION:
+      return 'Team';
+    default:
+      return 'System';
   }
 }
 
 export default async function ActivityPage() {
   const logs = await getActivityLogs();
+  
+  // Group activities by date
+  const groupedLogs = logs.reduce((groups, log) => {
+    const date = new Date(log.timestamp).toDateString();
+    if (!groups[date]) {
+      groups[date] = [];
+    }
+    groups[date].push(log);
+    return groups;
+  }, {} as Record<string, typeof logs>);
+
+  const activityStats = {
+    total: logs.length,
+    today: logs.filter(log => {
+      const today = new Date().toDateString();
+      return new Date(log.timestamp).toDateString() === today;
+    }).length,
+    thisWeek: logs.filter(log => {
+      const weekAgo = new Date();
+      weekAgo.setDate(weekAgo.getDate() - 7);
+      return new Date(log.timestamp) > weekAgo;
+    }).length,
+  };
 
   return (
-    <section className="flex-1 p-4 lg:p-8">
-      <h1 className="text-lg lg:text-2xl font-medium text-gray-900 mb-6">
-        Activity Log
-      </h1>
+    <div className="flex-1 space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Activity Log</h1>
+          <p className="text-muted-foreground">
+            Track all account and team activities
+          </p>
+        </div>
+      </div>
+
+      {/* Activity Stats */}
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Activities</CardTitle>
+            <Eye className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{activityStats.total}</div>
+            <p className="text-xs text-muted-foreground">All time</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Today</CardTitle>
+            <Clock className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{activityStats.today}</div>
+            <p className="text-xs text-muted-foreground">Activities today</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">This Week</CardTitle>
+            <Filter className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{activityStats.thisWeek}</div>
+            <p className="text-xs text-muted-foreground">Last 7 days</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Recent Activity */}
       <Card>
         <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Shield className="h-5 w-5" />
+            Recent Activity
+          </CardTitle>
+          <CardDescription>
+            A detailed log of all account and team activities
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {logs.length > 0 ? (
-            <ul className="space-y-4">
-              {logs.map((log) => {
-                const Icon = iconMap[log.action as ActivityType] || Settings;
-                const formattedAction = formatAction(
-                  log.action as ActivityType
-                );
+            <div className="space-y-6">
+              {Object.entries(groupedLogs).map(([date, dayLogs]) => (
+                <div key={date}>
+                  <div className="flex items-center gap-2 mb-4">
+                    <h3 className="text-sm font-medium text-muted-foreground">
+                      {new Date(date).toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
+                    </h3>
+                    <Separator className="flex-1" />
+                    <Badge variant="outline" className="text-xs">
+                      {dayLogs.length} {dayLogs.length === 1 ? 'activity' : 'activities'}
+                    </Badge>
+                  </div>
+                  
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Action</TableHead>
+                        <TableHead>Category</TableHead>
+                        <TableHead>Time</TableHead>
+                        <TableHead>IP Address</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {dayLogs.map((log) => {
+                        const Icon = iconMap[log.action as ActivityType] || Settings;
+                        const formattedAction = formatAction(log.action as ActivityType);
+                        const category = getActionCategory(log.action as ActivityType);
+                        const colorClass = actionColors[log.action as ActivityType] || 'bg-gray-100 text-gray-600 border-gray-200';
 
-                return (
-                  <li key={log.id} className="flex items-center space-x-4">
-                    <div className="bg-orange-100 rounded-full p-2">
-                      <Icon className="w-5 h-5 text-orange-600" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900">
-                        {formattedAction}
-                        {log.ipAddress && ` from IP ${log.ipAddress}`}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {getRelativeTime(new Date(log.timestamp))}
-                      </p>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
+                        return (
+                          <TableRow key={log.id}>
+                            <TableCell>
+                              <div className="flex items-center space-x-3">
+                                <div className={`rounded-full p-2 ${colorClass.split(' ')[0]} border`}>
+                                  <Icon className="w-4 h-4" />
+                                </div>
+                                <span className="font-medium">{formattedAction}</span>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="outline" className="text-xs">
+                                {category}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-muted-foreground">
+                              {getRelativeTime(new Date(log.timestamp))}
+                            </TableCell>
+                            <TableCell className="text-muted-foreground font-mono text-sm">
+                              {log.ipAddress || '—'}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </div>
+              ))}
+            </div>
           ) : (
             <div className="flex flex-col items-center justify-center text-center py-12">
-              <AlertCircle className="h-12 w-12 text-orange-500 mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <div className="bg-orange-100 rounded-full p-4 mb-4">
+                <AlertCircle className="h-8 w-8 text-orange-600" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">
                 No activity yet
               </h3>
-              <p className="text-sm text-gray-500 max-w-sm">
-                When you perform actions like signing in or updating your
-                account, they'll appear here.
+              <p className="text-muted-foreground max-w-sm">
+                When you perform actions like signing in, updating your account, or managing team members, they'll appear here.
               </p>
             </div>
           )}
         </CardContent>
       </Card>
-    </section>
+    </div>
   );
 }
