@@ -85,10 +85,21 @@ function PricingCard({
           </li>
         ))}
       </ul>
-      <form action={checkoutAction}>
-        <input type="hidden" name="priceId" value={priceId} />
-        <SubmitButton />
-      </form>
+      {priceId ? (
+        <form action={checkoutAction}>
+          <input type="hidden" name="priceId" value={priceId} />
+          <SubmitButton />
+        </form>
+      ) : (
+        <div className="text-center">
+          <p className="text-sm text-gray-500 mb-4">
+            Pricing configuration not available
+          </p>
+          <div className="w-full px-4 py-2 bg-gray-100 text-gray-400 rounded-full text-center">
+            Contact Support
+          </div>
+        </div>
+      )}
     </div>
   );
 }

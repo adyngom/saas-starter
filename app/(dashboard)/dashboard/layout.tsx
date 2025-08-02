@@ -7,6 +7,8 @@ import { CircleIcon, LayoutDashboard, Settings, Shield, Activity, LogOut, Home }
 import { ThemeSelector } from '@/components/theme-selector';
 import { signOut } from '@/app/(login)/actions';
 import { User } from '@/lib/db/schema';
+import { SuccessNotification } from '@/components/success-notification';
+import { CheckoutSuccessHandler } from '@/components/checkout-success-handler';
 import useSWR from 'swr';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -180,6 +182,10 @@ export default function DashboardLayout({
 
   return (
     <SidebarProvider>
+      <Suspense fallback={null}>
+        <CheckoutSuccessHandler />
+      </Suspense>
+      <SuccessNotification />
       <DashboardSidebar />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">

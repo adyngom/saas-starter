@@ -277,7 +277,7 @@ function TeamMembersTable() {
                         size="sm"
                         disabled={isRemovePending}
                         className="text-destructive hover:text-destructive/90 hover:bg-destructive/10">
-                      >
+                      
                         {isRemovePending ? 'Removing...' : 'Remove'}
                       </Button>
                     </form>

@@ -6,9 +6,10 @@ import {
   getUser,
   updateTeamSubscription
 } from '@/lib/db/queries';
+import { getBaseUrl } from '@/lib/utils/base-url';
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-04-30.basil'
+  apiVersion: '2025-07-30.basil'
 });
 
 export async function createCheckoutSession({
@@ -24,24 +25,36 @@ export async function createCheckoutSession({
     redirect(`/sign-up?redirect=checkout&priceId=${priceId}`);
   }
 
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ['card'],
-    line_items: [
-      {
-        price: priceId,
-        quantity: 1
+  if (!priceId || priceId.trim() === '') {
+    throw new Error('Price ID is required for checkout session creation');
+  }
+
+  const baseUrl = await getBaseUrl();
+  
+  let session;
+  try {
+    session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price: priceId,
+          quantity: 1
+        }
+      ],
+      mode: 'subscription',
+      success_url: `${baseUrl}/api/stripe/checkout?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/pricing`,
+      customer: team.stripeCustomerId || undefined,
+      client_reference_id: user.id.toString(),
+      allow_promotion_codes: true,
+      subscription_data: {
+        trial_period_days: 14
       }
-    ],
-    mode: 'subscription',
-    success_url: `${process.env.BASE_URL}/api/stripe/checkout?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${process.env.BASE_URL}/pricing`,
-    customer: team.stripeCustomerId || undefined,
-    client_reference_id: user.id.toString(),
-    allow_promotion_codes: true,
-    subscription_data: {
-      trial_period_days: 14
-    }
-  });
+    });
+  } catch (error) {
+    console.error('Stripe checkout session creation failed:', error);
+    throw new Error(`Failed to create checkout session: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
 
   redirect(session.url!);
 }
@@ -107,9 +120,11 @@ export async function createCustomerPortalSession(team: Team) {
     });
   }
 
+  const baseUrl = await getBaseUrl();
+  
   return stripe.billingPortal.sessions.create({
     customer: team.stripeCustomerId,
-    return_url: `${process.env.BASE_URL}/dashboard`,
+    return_url: `${baseUrl}/dashboard`,
     configuration: configuration.id
   });
 }
